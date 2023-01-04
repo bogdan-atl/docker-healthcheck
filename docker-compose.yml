@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  php:
+    build: .
+    volumes:
+     - ./www:/var/www
+    healthcheck:
+     test: curl -sS http://nginx | grep -c works > /dev/null
+     interval: 5s
+     timeout: 5s
+     retries: 5
+  nginx:
+    image: "nginx:latest"
+    ports:
+     - "8080:80"
+    volumes:
+     - ./nginx:/etc/nginx/conf.d
+     - ./www:/var/www
+    links:
+     - php
